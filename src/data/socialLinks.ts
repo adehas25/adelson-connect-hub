@@ -56,6 +56,12 @@ export const socialLinks: SocialLink[] = [
     gradient: "linear-gradient(135deg, #0EA5E9, #1E40AF)"
   },
   {
+    name: "Currículo Lattes",
+    url: "http://lattes.cnpq.br/3683659654561054",
+    icon: "fas fa-graduation-cap",
+    gradient: "linear-gradient(135deg, #F59E0B, #D97706)"
+  },
+  {
     name: "YouTube",
     url: "https://www.youtube.com/@adelsoneliasoficial",
     icon: "fab fa-youtube",
