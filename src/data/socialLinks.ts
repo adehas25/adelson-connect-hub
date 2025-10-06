@@ -14,13 +14,19 @@ export const socialLinks: SocialLink[] = [
     gradient: "linear-gradient(135deg, #25D366, #128C7E)"
   },
   {
+    name: "Declara Fácil",
+    url: "https://declarafacil.lovable.app/",
+    htmlIcon: '<img src="https://live.staticflickr.com/65535/54761899522_0d25284838_t.jpg" alt="Logo Declara Fácil" class="w-8 h-8 rounded-sm">',
+    gradient: "linear-gradient(135deg, #06B6D4, #1D4ED8)"
+  },
+  {
     name: "Notion",
     url: "https://hickory-chickadee-639.notion.site/Direito-1509137ee9938080a35edb8b3de41518?source=copy_link",
     htmlIcon: '<img src="https://live.staticflickr.com/65535/54761886877_1d7788504b_t.jpg" alt="Logo Notion" class="w-8 h-8 rounded-sm">',
     gradient: "linear-gradient(135deg, #2D2D2D, #000000)"
   },
   {
-    name: "Bibliologia",
+    name: "Materiais de Aula de Bibliologia",
     url: "https://1drv.ms/f/c/d7f729cbda9c8f34/EstF-Kq8VS5CppT5X0iuVIABPywtRgentcgVFo8E-o_9ag?e=GfhiM1",
     icon: "fas fa-book",
     gradient: "linear-gradient(135deg, #D97706, #92400E)"
@@ -36,12 +42,6 @@ export const socialLinks: SocialLink[] = [
     url: "https://www.instagram.com/adelsonelias",
     icon: "fab fa-instagram",
     gradient: "linear-gradient(135deg, #E4405F, #833AB4, #C13584)"
-  },
-  {
-    name: "Declara Fácil",
-    url: "https://adehas25.github.io/declarafacil/",
-    htmlIcon: '<img src="https://live.staticflickr.com/65535/54761899522_0d25284838_t.jpg" alt="Logo Declara Fácil" class="w-8 h-8 rounded-sm">',
-    gradient: "linear-gradient(135deg, #06B6D4, #1D4ED8)"
   },
   {
     name: "GitHub",
