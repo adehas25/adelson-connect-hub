@@ -28,7 +28,7 @@ export const socialLinks: SocialLink[] = [
   {
     name: "Quadrangular Sitio",
     url: "https://quadrangularsitio.lovable.app",
-    icon: "fas fa-church",
+    htmlIcon: '<img src="https://live.staticflickr.com/65535/54706825956_185a71f05c_c.jpg" alt="Logo Quadrangular Sitio" class="w-8 h-8 rounded-sm">',
     gradient: "linear-gradient(135deg, #8B5CF6, #6D28D9)"
   },
   {
