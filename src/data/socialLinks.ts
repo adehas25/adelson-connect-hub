@@ -14,6 +14,12 @@ export const socialLinks: SocialLink[] = [
     gradient: "linear-gradient(135deg, #25D366, #128C7E)"
   },
   {
+    name: "Instagram",
+    url: "https://www.instagram.com/declarafacilofc?igsh=NzVlcTVzc3RnazAz",
+    icon: "fab fa-instagram",
+    gradient: "linear-gradient(135deg, #E4405F, #833AB4, #C13584)"
+  },
+  {
     name: "Declara Fácil",
     url: "https://declarafacil.lovable.app/",
     htmlIcon: '<img src="https://live.staticflickr.com/65535/54761899522_0d25284838_t.jpg" alt="Logo Declara Fácil" class="w-8 h-8 rounded-sm">',
@@ -36,12 +42,6 @@ export const socialLinks: SocialLink[] = [
     url: "https://1drv.ms/f/c/d7f729cbda9c8f34/Ej3omYejh6FMpQleQ73NWVIBxCZoqd8dDLq81Vhc1-h9uA?e=fioCDP",
     icon: "fas fa-book-open",
     gradient: "linear-gradient(135deg, #6366F1, #4338CA)"
-  },
-  {
-    name: "Instagram",
-    url: "https://www.instagram.com/adelsonelias",
-    icon: "fab fa-instagram",
-    gradient: "linear-gradient(135deg, #E4405F, #833AB4, #C13584)"
   },
   {
     name: "GitHub",
