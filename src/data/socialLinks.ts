@@ -26,6 +26,12 @@ export const socialLinks: SocialLink[] = [
     gradient: "linear-gradient(135deg, #06B6D4, #1D4ED8)"
   },
   {
+    name: "Quadrangular Sitio",
+    url: "https://quadrangularsitio.lovable.app",
+    icon: "fas fa-church",
+    gradient: "linear-gradient(135deg, #8B5CF6, #6D28D9)"
+  },
+  {
     name: "Notion",
     url: "https://hickory-chickadee-639.notion.site/Direito-1509137ee9938080a35edb8b3de41518?source=copy_link",
     htmlIcon: '<img src="https://live.staticflickr.com/65535/54761886877_1d7788504b_t.jpg" alt="Logo Notion" class="w-8 h-8 rounded-sm">',
@@ -48,12 +54,6 @@ export const socialLinks: SocialLink[] = [
     url: "https://github.com/adehas25",
     icon: "fab fa-github",
     gradient: "linear-gradient(135deg, #374151, #111827)"
-  },
-  {
-    name: "LinkedIn",
-    url: "https://www.linkedin.com/in/adelson-elias-5a97ab36a/",
-    icon: "fab fa-linkedin",
-    gradient: "linear-gradient(135deg, #0EA5E9, #1E40AF)"
   },
   {
     name: "Currículo Lattes",
