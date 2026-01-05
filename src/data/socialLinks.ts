@@ -26,10 +26,10 @@ export const socialLinks: SocialLink[] = [
     gradient: "linear-gradient(135deg, #06B6D4, #1D4ED8)"
   },
   {
-    name: "Quadrangular Sitio",
-    url: "https://quadrangularsitio.lovable.app",
-    htmlIcon: '<img src="https://live.staticflickr.com/65535/54706825956_185a71f05c_c.jpg" alt="Logo Quadrangular Sitio" class="w-8 h-8 rounded-sm">',
-    gradient: "linear-gradient(135deg, #8B5CF6, #6D28D9)"
+    name: "Retiro Ebenezer",
+    url: "https://retiroebenezer.lovable.app/",
+    icon: "fas fa-campground",
+    gradient: "linear-gradient(135deg, #10B981, #047857)"
   },
   {
     name: "Notion",
