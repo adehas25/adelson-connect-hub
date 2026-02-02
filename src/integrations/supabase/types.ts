@@ -162,6 +162,7 @@ export type Database = {
           profile_description: string | null
           profile_image_url: string | null
           profile_name: string
+          theme: string
           updated_at: string
         }
         Insert: {
@@ -171,6 +172,7 @@ export type Database = {
           profile_description?: string | null
           profile_image_url?: string | null
           profile_name?: string
+          theme?: string
           updated_at?: string
         }
         Update: {
@@ -180,6 +182,7 @@ export type Database = {
           profile_description?: string | null
           profile_image_url?: string | null
           profile_name?: string
+          theme?: string
           updated_at?: string
         }
         Relationships: []

@@ -7,6 +7,7 @@ export interface SiteSettings {
   profile_description: string | null;
   profile_image_url: string | null;
   footer_text: string | null;
+  theme: string;
   updated_at: string;
 }
 
