@@ -5,20 +5,25 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, Link, Image } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ImageCropper from "./ImageCropper";
 
 interface ImageUploadProps {
   currentUrl: string;
   onUpload: (url: string) => void;
   bucket: "avatars" | "link-logos";
+  enableCrop?: boolean;
+  cropAspect?: number;
 }
 
-const ImageUpload = ({ currentUrl, onUpload, bucket }: ImageUploadProps) => {
+const ImageUpload = ({ currentUrl, onUpload, bucket, enableCrop = true, cropAspect = 1 }: ImageUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [urlInput, setUrlInput] = useState("");
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -42,10 +47,30 @@ const ImageUpload = ({ currentUrl, onUpload, bucket }: ImageUploadProps) => {
       return;
     }
 
+    if (enableCrop) {
+      // Show cropper
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImageToCrop(reader.result as string);
+        setCropperOpen(true);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // Upload directly
+      await uploadFile(file);
+    }
+    
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const uploadFile = async (file: File | Blob) => {
     setIsUploading(true);
 
     try {
-      const fileExt = file.name.split(".").pop();
+      const fileExt = file instanceof File ? file.name.split(".").pop() : "jpg";
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
@@ -72,6 +97,12 @@ const ImageUpload = ({ currentUrl, onUpload, bucket }: ImageUploadProps) => {
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    setCropperOpen(false);
+    setImageToCrop(null);
+    await uploadFile(croppedBlob);
   };
 
   const handleUrlSubmit = () => {
@@ -104,7 +135,7 @@ const ImageUpload = ({ currentUrl, onUpload, bucket }: ImageUploadProps) => {
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            onChange={handleFileUpload}
+            onChange={handleFileSelect}
             className="hidden"
           />
           <Button
@@ -121,6 +152,11 @@ const ImageUpload = ({ currentUrl, onUpload, bucket }: ImageUploadProps) => {
             )}
             {isUploading ? "Enviando..." : "Escolher Imagem"}
           </Button>
+          {enableCrop && (
+            <p className="text-xs text-white/50 text-center">
+              Após selecionar, você poderá recortar a imagem
+            </p>
+          )}
         </TabsContent>
 
         <TabsContent value="url" className="space-y-2">
@@ -147,6 +183,19 @@ const ImageUpload = ({ currentUrl, onUpload, bucket }: ImageUploadProps) => {
           />
           <span className="text-xs text-white/50 truncate flex-1">{currentUrl}</span>
         </div>
+      )}
+
+      {imageToCrop && (
+        <ImageCropper
+          imageSrc={imageToCrop}
+          open={cropperOpen}
+          onClose={() => {
+            setCropperOpen(false);
+            setImageToCrop(null);
+          }}
+          onCropComplete={handleCropComplete}
+          aspect={cropAspect}
+        />
       )}
     </div>
   );
