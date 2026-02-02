@@ -14,6 +14,146 @@ export type Database = {
   }
   public: {
     Tables: {
+      authorized_admins: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      customers: {
+        Row: {
+          cpf: string | null
+          created_at: string
+          full_name: string
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cpf?: string | null
+          created_at?: string
+          full_name: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cpf?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          customer_id: string
+          gateway: string
+          id: string
+          metadata: Json | null
+          status: string
+          subscription_id: string | null
+          transaction_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          customer_id: string
+          gateway: string
+          id?: string
+          metadata?: Json | null
+          status?: string
+          subscription_id?: string | null
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          customer_id?: string
+          gateway?: string
+          id?: string
+          metadata?: Json | null
+          status?: string
+          subscription_id?: string | null
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          author_email: string
+          category: string
+          content: string
+          created_at: string
+          excerpt: string | null
+          id: string
+          image_url: string | null
+          published: boolean
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_email: string
+          category?: string
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_email?: string
+          category?: string
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           created_at: string
@@ -82,6 +222,62 @@ export type Database = {
           url?: string
         }
         Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          abacatepay_billing_id: string | null
+          created_at: string
+          customer_id: string
+          id: string
+          paid_at: string | null
+          payment_id: string | null
+          payment_method: string | null
+          payment_status: string | null
+          plan_name: string
+          plan_price: string
+          status: string
+          stripe_session_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          abacatepay_billing_id?: string | null
+          created_at?: string
+          customer_id: string
+          id?: string
+          paid_at?: string | null
+          payment_id?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          plan_name: string
+          plan_price: string
+          status?: string
+          stripe_session_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          abacatepay_billing_id?: string | null
+          created_at?: string
+          customer_id?: string
+          id?: string
+          paid_at?: string | null
+          payment_id?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          plan_name?: string
+          plan_price?: string
+          status?: string
+          stripe_session_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
