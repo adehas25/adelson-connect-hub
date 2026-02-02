@@ -4,6 +4,7 @@ import PortfolioCard from "@/components/PortfolioCard";
 import BackgroundEffects from "@/components/BackgroundEffects";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useSocialLinks } from "@/hooks/useSocialLinks";
+import { applyTheme, getThemeById } from "@/lib/themes";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
@@ -21,6 +22,13 @@ const Index = () => {
       document.head.removeChild(link);
     };
   }, []);
+
+  // Apply theme when settings load
+  useEffect(() => {
+    if (settings?.theme) {
+      applyTheme(getThemeById(settings.theme));
+    }
+  }, [settings?.theme]);
 
   const isLoading = settingsLoading || linksLoading;
 
