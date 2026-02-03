@@ -282,6 +282,42 @@ export type Database = {
           },
         ]
       }
+      user_profiles: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_name: string
+          id: string
+          profile_image_url: string | null
+          theme: string
+          updated_at: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_name: string
+          id?: string
+          profile_image_url?: string | null
+          theme?: string
+          updated_at?: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_name?: string
+          id?: string
+          profile_image_url?: string | null
+          theme?: string
+          updated_at?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -302,6 +338,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_social_links: {
+        Row: {
+          created_at: string
+          display_order: number
+          gradient: string
+          html_icon: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string
+          url: string
+          user_profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          gradient: string
+          html_icon?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string
+          url: string
+          user_profile_id: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          gradient?: string
+          html_icon?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string
+          url?: string
+          user_profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_social_links_user_profile_id_fkey"
+            columns: ["user_profile_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
