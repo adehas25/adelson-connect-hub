@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 import BackgroundEffects from "@/components/BackgroundEffects";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Link2, Palette, Share2, Zap, Users, Globe } from "lucide-react";
+import { ArrowRight, Link2, Palette, Share2, Zap, Users, Globe, Download, Smartphone } from "lucide-react";
 
 const Index = () => {
   const { user } = useAuth();
+  const { isInstallable, isInstalled, install } = usePWAInstall();
 
   return (
     <div className="min-h-screen relative font-inter">
@@ -21,6 +23,27 @@ const Index = () => {
             <span className="text-xl font-bold text-white tracking-tight">AllConnect</span>
           </div>
           <div className="flex items-center gap-3">
+            {!isInstalled && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-primary/50 text-primary hover:bg-primary/10"
+                onClick={isInstallable ? install : undefined}
+                asChild={!isInstallable}
+              >
+                {isInstallable ? (
+                  <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Instalar App
+                  </>
+                ) : (
+                  <a href="/install">
+                    <Download className="mr-2 h-4 w-4" />
+                    Instalar App
+                  </a>
+                )}
+              </Button>
+            )}
             {user ? (
               <Link to="/my-page">
                 <Button size="sm" className="gradient-primary border-0 text-white">
