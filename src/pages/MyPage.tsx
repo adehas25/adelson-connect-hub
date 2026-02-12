@@ -234,7 +234,7 @@ const MyPage = () => {
 
   const copyProfileUrl = () => {
     if (!profile) return;
-    const url = `${window.location.origin}/${profile.username}`;
+    const url = `https://allconnecthub.lovable.app/${profile.username}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -294,7 +294,7 @@ const MyPage = () => {
             </CardTitle>
             <CardDescription className="text-white/70">
               {profile
-                ? `Sua página está em: ${window.location.origin}/${profile.username}`
+                ? `Sua página está em: https://allconnecthub.lovable.app/${profile.username}`
                 : "Configure seu perfil e links"}
             </CardDescription>
           </CardHeader>
