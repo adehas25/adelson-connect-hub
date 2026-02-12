@@ -82,7 +82,7 @@ const Index = () => {
             {/* URL Preview */}
             <div className="mt-12 inline-flex items-center gap-2 glass rounded-full px-6 py-3">
               <Globe className="w-4 h-4 text-primary" />
-              <span className="text-white/50 text-sm">allconnect-hub.lovable.app/</span>
+              <span className="text-white/50 text-sm">allconnecthub.lovable.app/</span>
               <span className="text-white font-semibold text-sm">seuusername</span>
             </div>
           </div>

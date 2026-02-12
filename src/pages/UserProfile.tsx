@@ -106,7 +106,7 @@ const UserProfile = () => {
       {/* Footer */}
       <footer className="relative z-10 text-center py-8 text-white/60 text-sm">
         <div className="glass rounded-full mx-auto w-fit px-6 py-3">
-          @{profile?.username}
+          allconnecthub.lovable.app/{profile?.username}
         </div>
       </footer>
     </div>
