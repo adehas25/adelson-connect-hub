@@ -18,7 +18,8 @@ export default defineConfig(({ mode }) => ({
       manifest: false, // using public/manifest.json
       workbox: {
         navigateFallbackDenylist: [/^\/~oauth/],
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp}"],
+        globPatterns: ["**/*.{js,css,html,ico,svg}"],
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
     }),
   ].filter(Boolean),
