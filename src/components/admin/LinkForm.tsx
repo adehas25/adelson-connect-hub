@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, X } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import LinkPresets, { LinkPreset } from "./LinkPresets";
 
 interface LinkFormProps {
   link: SocialLink | null;
@@ -32,42 +33,57 @@ const LinkForm = ({ link, onClose }: LinkFormProps) => {
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [icon, setIcon] = useState("");
-  const [htmlIcon, setHtmlIcon] = useState("");
   const [gradient, setGradient] = useState(gradientPresets[0].value);
   const [isActive, setIsActive] = useState(true);
   const [logoUrl, setLogoUrl] = useState("");
-  const [iconType, setIconType] = useState<"fontawesome" | "logo">("fontawesome");
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+  const [isCustom, setIsCustom] = useState(false);
 
   useEffect(() => {
     if (link) {
       setName(link.name);
       setUrl(link.url);
       setIcon(link.icon || "");
-      setHtmlIcon(link.html_icon || "");
       setGradient(link.gradient);
       setIsActive(link.is_active);
-      
+
       if (link.html_icon?.includes("<img")) {
-        setIconType("logo");
+        setIsCustom(true);
         const match = link.html_icon.match(/src="([^"]+)"/);
         if (match) setLogoUrl(match[1]);
       } else {
-        setIconType("fontawesome");
+        setSelectedPreset(link.name);
       }
     }
   }, [link]);
 
+  const handlePresetSelect = (preset: LinkPreset) => {
+    setSelectedPreset(preset.name);
+    setIsCustom(false);
+    setIcon(preset.icon);
+    setGradient(preset.gradient);
+    if (!link) {
+      setName(preset.name);
+    }
+  };
+
+  const handleCustomSelect = () => {
+    setIsCustom(true);
+    setSelectedPreset(null);
+    setIcon("");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const finalHtmlIcon = iconType === "logo" && logoUrl
+    const finalHtmlIcon = isCustom && logoUrl
       ? `<img src="${logoUrl}" alt="${name}" class="w-8 h-8 rounded-sm">`
       : null;
 
     const data = {
       name,
       url,
-      icon: iconType === "fontawesome" ? icon : null,
+      icon: !isCustom ? icon : null,
       html_icon: finalHtmlIcon,
       gradient,
       is_active: isActive,
@@ -77,16 +93,10 @@ const LinkForm = ({ link, onClose }: LinkFormProps) => {
     try {
       if (link) {
         await updateLink.mutateAsync({ id: link.id, ...data });
-        toast({
-          title: "Sucesso!",
-          description: "Link atualizado com sucesso.",
-        });
+        toast({ title: "Sucesso!", description: "Link atualizado com sucesso." });
       } else {
         await createLink.mutateAsync(data);
-        toast({
-          title: "Sucesso!",
-          description: "Link criado com sucesso.",
-        });
+        toast({ title: "Sucesso!", description: "Link criado com sucesso." });
       }
       onClose();
     } catch (error: any) {
@@ -110,6 +120,26 @@ const LinkForm = ({ link, onClose }: LinkFormProps) => {
           <X className="h-4 w-4" />
         </Button>
       </div>
+
+      {/* Visual icon selector */}
+      <LinkPresets
+        selectedPreset={selectedPreset}
+        onSelect={handlePresetSelect}
+        onSelectCustom={handleCustomSelect}
+        isCustomSelected={isCustom}
+      />
+
+      {/* Custom logo upload */}
+      {isCustom && (
+        <div className="space-y-2">
+          <Label className="text-white">Logo personalizada</Label>
+          <ImageUpload
+            currentUrl={logoUrl}
+            onUpload={(url) => setLogoUrl(url)}
+            bucket="link-logos"
+          />
+        </div>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
@@ -138,57 +168,6 @@ const LinkForm = ({ link, onClose }: LinkFormProps) => {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-white">Tipo de Ícone</Label>
-        <div className="flex gap-4">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              checked={iconType === "fontawesome"}
-              onChange={() => setIconType("fontawesome")}
-              className="accent-primary"
-            />
-            <span className="text-white/80">Font Awesome</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              checked={iconType === "logo"}
-              onChange={() => setIconType("logo")}
-              className="accent-primary"
-            />
-            <span className="text-white/80">Logo/Imagem</span>
-          </label>
-        </div>
-      </div>
-
-      {iconType === "fontawesome" ? (
-        <div className="space-y-2">
-          <Label htmlFor="icon" className="text-white">
-            Classe do Ícone (Font Awesome)
-          </Label>
-          <Input
-            id="icon"
-            value={icon}
-            onChange={(e) => setIcon(e.target.value)}
-            placeholder="fab fa-instagram"
-            className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
-          />
-          <p className="text-xs text-white/50">
-            Ex: fab fa-instagram, fab fa-github, fas fa-envelope
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-2">
-          <Label className="text-white">Logo</Label>
-          <ImageUpload
-            currentUrl={logoUrl}
-            onUpload={(url) => setLogoUrl(url)}
-            bucket="link-logos"
-          />
-        </div>
-      )}
-
-      <div className="space-y-2">
         <Label className="text-white">Cor de Fundo</Label>
         <div className="grid grid-cols-4 gap-2">
           {gradientPresets.map((preset) => (
@@ -214,21 +193,15 @@ const LinkForm = ({ link, onClose }: LinkFormProps) => {
       </div>
 
       <div className="flex items-center gap-2">
-        <Switch
-          id="active"
-          checked={isActive}
-          onCheckedChange={setIsActive}
-        />
-        <Label htmlFor="active" className="text-white cursor-pointer">
-          Link ativo
-        </Label>
+        <Switch id="active" checked={isActive} onCheckedChange={setIsActive} />
+        <Label htmlFor="active" className="text-white cursor-pointer">Link ativo</Label>
       </div>
 
       {/* Preview */}
       <div className="p-4 rounded-xl" style={{ background: gradient }}>
         <div className="flex items-center gap-4">
           <div className="w-8 h-8 flex items-center justify-center text-white">
-            {iconType === "logo" && logoUrl ? (
+            {isCustom && logoUrl ? (
               <img src={logoUrl} alt={name} className="w-8 h-8 rounded-sm" />
             ) : icon ? (
               <i className={icon} />
@@ -241,15 +214,9 @@ const LinkForm = ({ link, onClose }: LinkFormProps) => {
       </div>
 
       <div className="flex gap-2 justify-end">
-        <Button type="button" variant="outline" onClick={onClose}>
-          Cancelar
-        </Button>
+        <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
         <Button type="submit" disabled={isLoading} className="bg-primary hover:bg-primary/90">
-          {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-          ) : (
-            <Save className="h-4 w-4 mr-2" />
-          )}
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
           Salvar
         </Button>
       </div>
