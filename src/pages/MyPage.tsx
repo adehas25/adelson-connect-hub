@@ -27,6 +27,7 @@ import { Loader2, Plus, Trash2, GripVertical, ExternalLink, Copy, Check, ArrowLe
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ImageUpload from "@/components/admin/ImageUpload";
+import LinkPresets, { LinkPreset } from "@/components/admin/LinkPresets";
 
 const GRADIENT_OPTIONS = [
   { value: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", label: "Roxo" },
@@ -69,6 +70,9 @@ const MyPage = () => {
   const [linkIcon, setLinkIcon] = useState("");
   const [linkGradient, setLinkGradient] = useState(GRADIENT_OPTIONS[0].value);
   const [linkActive, setLinkActive] = useState(true);
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+  const [isCustomIcon, setIsCustomIcon] = useState(false);
+  const [customLogoUrl, setCustomLogoUrl] = useState("");
 
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [checkingUsername, setCheckingUsername] = useState(false);
@@ -184,6 +188,15 @@ const MyPage = () => {
       setLinkIcon(link.icon || "");
       setLinkGradient(link.gradient);
       setLinkActive(link.is_active);
+      setSelectedPreset(link.name);
+      if (link.html_icon?.includes("<img")) {
+        setIsCustomIcon(true);
+        const match = link.html_icon.match(/src="([^"]+)"/);
+        if (match) setCustomLogoUrl(match[1]);
+      } else {
+        setIsCustomIcon(false);
+        setCustomLogoUrl("");
+      }
     } else {
       setEditingLink(null);
       setLinkName("");
@@ -191,12 +204,35 @@ const MyPage = () => {
       setLinkIcon("");
       setLinkGradient(GRADIENT_OPTIONS[0].value);
       setLinkActive(true);
+      setSelectedPreset(null);
+      setIsCustomIcon(false);
+      setCustomLogoUrl("");
     }
     setLinkDialogOpen(true);
   };
 
+  const handlePresetSelect = (preset: LinkPreset) => {
+    setSelectedPreset(preset.name);
+    setIsCustomIcon(false);
+    setLinkIcon(preset.icon);
+    setLinkGradient(preset.gradient);
+    if (!editingLink) {
+      setLinkName(preset.name);
+    }
+  };
+
+  const handleCustomIconSelect = () => {
+    setIsCustomIcon(true);
+    setSelectedPreset(null);
+    setLinkIcon("");
+  };
+
   const handleSaveLink = async () => {
     if (!linkName || !linkUrl || !profile) return;
+
+    const finalHtmlIcon = isCustomIcon && customLogoUrl
+      ? `<img src="${customLogoUrl}" alt="${linkName}" class="w-8 h-8 rounded-sm">`
+      : null;
 
     try {
       if (editingLink) {
@@ -205,7 +241,8 @@ const MyPage = () => {
           profileId: profile.id,
           name: linkName,
           url: linkUrl,
-          icon: linkIcon || null,
+          icon: !isCustomIcon ? (linkIcon || null) : null,
+          html_icon: finalHtmlIcon,
           gradient: linkGradient,
           is_active: linkActive,
         });
@@ -214,8 +251,8 @@ const MyPage = () => {
           user_profile_id: profile.id,
           name: linkName,
           url: linkUrl,
-          icon: linkIcon || null,
-          html_icon: null,
+          icon: !isCustomIcon ? (linkIcon || null) : null,
+          html_icon: finalHtmlIcon,
           gradient: linkGradient,
           display_order: (links?.length || 0) + 1,
           is_active: linkActive,
@@ -396,12 +433,30 @@ const MyPage = () => {
                         </DialogTitle>
                       </DialogHeader>
                       <div className="space-y-4 mt-4">
+                        <LinkPresets
+                          selectedPreset={selectedPreset}
+                          onSelect={handlePresetSelect}
+                          onSelectCustom={handleCustomIconSelect}
+                          isCustomSelected={isCustomIcon}
+                        />
+
+                        {isCustomIcon && (
+                          <div className="space-y-2">
+                            <Label className="text-white">Logo personalizada</Label>
+                            <ImageUpload
+                              currentUrl={customLogoUrl}
+                              onUpload={(url) => setCustomLogoUrl(url)}
+                              bucket="link-logos"
+                            />
+                          </div>
+                        )}
+
                         <div className="space-y-2">
                           <Label className="text-white">Nome</Label>
                           <Input
                             value={linkName}
                             onChange={(e) => setLinkName(e.target.value)}
-                            placeholder="Instagram"
+                            placeholder="Nome do link"
                             className="bg-white/10 border-white/20 text-white"
                           />
                         </div>
@@ -410,47 +465,46 @@ const MyPage = () => {
                           <Input
                             value={linkUrl}
                             onChange={(e) => setLinkUrl(e.target.value)}
-                            placeholder="https://instagram.com/seuuser"
+                            placeholder="https://..."
                             className="bg-white/10 border-white/20 text-white"
                           />
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-white">Ícone (Font Awesome)</Label>
-                          <Input
-                            value={linkIcon}
-                            onChange={(e) => setLinkIcon(e.target.value)}
-                            placeholder="fab fa-instagram"
-                            className="bg-white/10 border-white/20 text-white"
-                          />
-                          <p className="text-xs text-white/50">
-                            Ex: fab fa-instagram, fab fa-twitter, fas fa-link
-                          </p>
                         </div>
                         <div className="space-y-2">
                           <Label className="text-white">Cor</Label>
-                          <Select value={linkGradient} onValueChange={setLinkGradient}>
-                            <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {GRADIENT_OPTIONS.map((opt) => (
-                                <SelectItem key={opt.value} value={opt.value}>
-                                  <div className="flex items-center gap-2">
-                                    <div
-                                      className="w-4 h-4 rounded"
-                                      style={{ background: opt.value }}
-                                    />
-                                    {opt.label}
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <div className="grid grid-cols-4 gap-2">
+                            {GRADIENT_OPTIONS.map((opt) => (
+                              <button
+                                key={opt.value}
+                                type="button"
+                                onClick={() => setLinkGradient(opt.value)}
+                                className={`h-10 rounded-lg transition-all ${linkGradient === opt.value ? "ring-2 ring-white ring-offset-2 ring-offset-black/50" : ""}`}
+                                style={{ background: opt.value }}
+                                title={opt.label}
+                              />
+                            ))}
+                          </div>
                         </div>
                         <div className="flex items-center justify-between">
                           <Label className="text-white">Ativo</Label>
                           <Switch checked={linkActive} onCheckedChange={setLinkActive} />
                         </div>
+
+                        {/* Preview */}
+                        <div className="p-3 rounded-xl" style={{ background: linkGradient }}>
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 flex items-center justify-center text-white">
+                              {isCustomIcon && customLogoUrl ? (
+                                <img src={customLogoUrl} alt={linkName} className="w-8 h-8 rounded-sm" />
+                              ) : linkIcon ? (
+                                <i className={linkIcon} />
+                              ) : (
+                                <span className="text-white/50">?</span>
+                              )}
+                            </div>
+                            <span className="text-white font-semibold">{linkName || "Preview"}</span>
+                          </div>
+                        </div>
+
                         <Button onClick={handleSaveLink} className="w-full">
                           {editingLink ? "Salvar" : "Adicionar"}
                         </Button>
