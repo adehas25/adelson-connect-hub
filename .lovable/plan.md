@@ -1,47 +1,29 @@
 
 
-## Seletor visual de icones para links
+## Corrigir visibilidade do grid visual de icones no mobile
 
-Atualmente, o usuario precisa digitar manualmente a classe do icone Font Awesome (ex: `fab fa-instagram`) ou fazer upload de uma logo. Vamos substituir isso por um grid visual de icones pre-definidos, otimizado para mobile, onde o usuario simplesmente toca no icone desejado.
+### Problema
 
-### O que muda
+O dialog de criacao/edicao de link no `MyPage.tsx` nao tem scroll interno. No mobile, o conteudo (grid de presets + campos de nome/URL + seletor de cor + preview + botao) ultrapassa a altura da tela, fazendo com que o grid de icones e outros campos fiquem cortados ou invisiveis.
 
-**Arquivo: `src/components/admin/LinkForm.tsx`**
+### Solucao
 
-- Remover o campo de texto para digitar classe Font Awesome
-- Remover o radio button "Font Awesome / Logo"
-- Substituir por um grid visual com todos os icones populares de redes sociais e tipos de link
-- Cada icone sera um botao com o logo SVG inline + nome embaixo
-- O icone selecionado tera destaque visual (borda, escala)
-- Manter a opcao "Logo personalizada" como ultimo item do grid (para upload de imagem custom)
-- Ao selecionar um preset, preencher automaticamente o `icon`, `gradient` e `name` (o usuario pode editar depois)
-- Grid responsivo: 3 colunas no mobile, 4 no desktop
+**Arquivo: `src/pages/MyPage.tsx`**
 
-**Arquivo: `src/components/admin/LinkPresets.tsx` (novo)**
+Adicionar scroll interno ao `DialogContent` para que todo o conteudo seja acessivel no mobile:
 
-- Componente com a lista de presets de links populares:
-  - WhatsApp, Instagram, Facebook, TikTok, YouTube, X/Twitter, LinkedIn, GitHub, Telegram, Spotify, Pinterest, Snapchat, Discord, Twitch, E-mail, Telefone, Website, Notion, OneDrive, Google Drive, Curriculo Lattes, E-book/Livro
-- Cada preset contem: nome, icone (classe Font Awesome), gradiente padrao
-- Ultimo item: "Personalizado" para upload de logo propria
+- Envolver o conteudo do dialog com `ScrollArea` (componente ja existente no projeto) ou aplicar `max-h-[80vh] overflow-y-auto` no container interno
+- Ajustar o `DialogContent` para ter altura maxima de `90vh` no mobile
+- Garantir que o grid de presets e todos os campos fiquem dentro da area com scroll
 
 ### Detalhes tecnicos
 
-- O componente `LinkPresets` recebe `onSelect(preset)` como callback
-- Quando o usuario seleciona um preset, o formulario preenche `name`, `icon`, `gradient` automaticamente
-- O campo de nome e URL continuam editaveis
-- O campo de gradiente continua disponivel para personalizacao
-- Layout do grid usa CSS grid com `grid-cols-3 md:grid-cols-4 gap-3`
-- Cada item do grid tem ~64px de altura, icone centralizado + label pequeno
-- Item selecionado: `ring-2 ring-primary scale-105`
-- Scroll vertical no mobile se necessario, com max-height e overflow-y-auto
-- A opcao "Personalizado" abre o componente `ImageUpload` existente
+1. No `DialogContent`, adicionar classes `max-h-[90vh] overflow-hidden` para limitar a altura
+2. Envolver o `div.space-y-4` interno com um container scrollavel: `max-h-[calc(90vh-80px)] overflow-y-auto pr-1`
+3. Isso garante que o header do dialog fique fixo e o conteudo role normalmente
+4. O `80px` desconta o espaco do header do dialog
 
-### Fluxo do usuario
+### Resultado esperado
 
-1. Clica em "Novo Link"
-2. Ve o grid de icones populares
-3. Toca no icone desejado (ex: Instagram)
-4. Nome, icone e cor sao preenchidos automaticamente
-5. Digita apenas a URL
-6. Salva
+O usuario no mobile conseguira rolar o conteudo do dialog, vendo o grid completo de icones, os campos de nome/URL, o seletor de cor, o preview e o botao de salvar.
 
