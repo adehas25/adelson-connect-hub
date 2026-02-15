@@ -43,7 +43,7 @@ const LinkPresets = ({ selectedPreset, onSelect, onSelectCustom, isCustomSelecte
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium text-white">Tipo de Link</label>
-      <div className="grid grid-cols-3 md:grid-cols-4 gap-3 max-h-[320px] overflow-y-auto pr-1">
+      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
         {presets.map((preset) => (
           <button
             key={preset.name}
