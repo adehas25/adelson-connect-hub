@@ -426,13 +426,13 @@ const MyPage = () => {
                         Adicionar
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="glass border-white/20">
+                    <DialogContent className="glass border-white/20 max-h-[90vh] overflow-hidden">
                       <DialogHeader>
                         <DialogTitle className="text-white">
                           {editingLink ? "Editar link" : "Novo link"}
                         </DialogTitle>
                       </DialogHeader>
-                      <div className="space-y-4 mt-4">
+                      <div className="max-h-[calc(90vh-80px)] overflow-y-auto pr-1 space-y-4 mt-4">
                         <LinkPresets
                           selectedPreset={selectedPreset}
                           onSelect={handlePresetSelect}
