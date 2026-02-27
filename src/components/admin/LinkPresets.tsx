@@ -30,6 +30,7 @@ const presets: LinkPreset[] = [
   { name: "Google Drive", icon: "fab fa-google-drive", gradient: "linear-gradient(135deg, #4285F4, #34A853)", type: "preset" },
   { name: "Currículo Lattes", icon: "fas fa-graduation-cap", gradient: "linear-gradient(135deg, #F59E0B, #D97706)", type: "preset" },
   { name: "E-book / Livro", icon: "fas fa-book-open", gradient: "linear-gradient(135deg, #6366F1, #4338CA)", type: "preset" },
+  { name: "Biliologia", icon: "fas fa-book-bible", gradient: "linear-gradient(135deg, #8B5CF6, #6D28D9)", type: "preset" },
 ];
 
 interface LinkPresetsProps {
